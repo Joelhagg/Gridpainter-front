@@ -1,7 +1,52 @@
+import { io } from "socket.io-client";
+
 export function Home() {
+
+    const socket = io();
+
+
+    function drawPixel(id, color) {
+        console.log("du vill måla ", id, "med färgen ", color);
+        let pixel = document.getElementById(id)
+
+        if (pixel.style.backgroundColor === "red") {
+
+            socket.emit("drawing", { position: id, color: "white" });
+
+            return
+        }
+
+        socket.emit("drawing", { position: id, color: "red" });
+    }
+
+
+    socket.on("drawing", function (msg) {
+        console.log(msg);
+
+        let pixel = document.getElementById(msg.position)
+
+        pixel.style.backgroundColor = msg.color
+
+    })
+
+    socket.on("history", function (history) {
+        console.log(history);
+
+        for (let i = 0; i < history.length; i++) {
+            const historyPixel = history[i];
+
+            let pixelToDraw = document.getElementById(historyPixel.position)
+            pixelToDraw.style.backgroundColor = historyPixel.color;
+
+        }
+    })
+
+
+
+
     return (
         <>
-            <div id="gridContainer">
+            <div id="gridContainer" onClick={()=>{drawPixel(e.target.id, "blue")}}>
                 <div id="1-1" class="pixel">1-1</div>
                 <div id="1-2" class="pixel">1-2</div>
                 <div id="1-3" class="pixel">1-3</div>
