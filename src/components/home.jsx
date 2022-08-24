@@ -2,7 +2,7 @@ import { io } from "socket.io-client";
 
 export function Home() {
 
-    const socket = io();
+    const socket = io.connect('http://localhost:3000');
 
 
     function drawPixel(id, color) {
