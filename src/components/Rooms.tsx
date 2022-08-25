@@ -1,10 +1,23 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { IRoom } from "./models/IRoom";
 
 export const Rooms = () => {
+  const navigate = useNavigate()
   const [roomName, setRoomName] = useState("")
-  const [rooms, setRooms] = useState("")
+  const [rooms, setRooms] = useState<IRoom[]>([])
+
+  async function getRooms() {
+    let response = await axios.get<IRoom[]>('http://localhost:3001/rooms')
+    return response.data
+  }
+
+  useEffect(() => {
+    getRooms().then(res => {
+      setRooms(res)
+    })
+  }, [])
 
   const createRoom = () => {
     axios.post('http://localhost:3001/rooms', {room: roomName})
@@ -17,16 +30,21 @@ export const Rooms = () => {
     setRoomName(e.currentTarget.value)
   }
 
-  const navigate = useNavigate()
+  let renderRooms = rooms.map((room, i) => {
+    return(<div key={i}>
+      {room.room}
+      <button onClick={() => {navigate(`/${room.room}`)}}>Join</button>
+    </div>)
+  })
+
   return(<div>
     <div className="createRoomBox">
       <input type="text" placeholder="Room name" required onChange={(e) => {handleChange(e)}}/>
       <button onClick={createRoom}>Create room</button>
     </div>
-    Lista över rum man kan joina
+
     <div>
-      Ett rum
-      <button onClick={() => {navigate('/room')}}>Fakeknapp joina rum</button>
+      {renderRooms}
     </div>
   </div>
   )
