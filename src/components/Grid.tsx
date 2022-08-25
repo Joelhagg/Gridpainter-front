@@ -7,7 +7,11 @@ const socket = io('http://localhost:3001', {"autoConnect": false})
 
 export const Grid = () => {
   const [fields, setFields] = useState<IFields[]>([])
-  let myColor = "green"
+  let mycolorpicker = ["green", "yellow", "orange", "black"]
+  let myColor = mycolorpicker[1];
+
+  // mycolorpicker.splice(0,1);
+  // socket.emit("color", mycolorpicker);
 
   useEffect(() => {
     axios.get<IFields[]>('http://localhost:3001/fields')
@@ -35,7 +39,7 @@ export const Grid = () => {
     <div key={field.position} id={field.position} className="pixel" 
         onMouseEnter={
           (e) => {
-            if(e.currentTarget.style.backgroundColor != "white" && e.currentTarget.style.backgroundColor != myColor){
+            if(e.currentTarget.style.backgroundColor != "white"){
               e.currentTarget.style.backgroundColor = "white"
             }
             else{e.currentTarget.style.backgroundColor = myColor}
