@@ -2,7 +2,7 @@ import axios from "axios"
 import React, { useEffect, useState } from "react"
 import { IFields } from "./models/IFields"
 import { io } from "socket.io-client"
-import { hover } from "@testing-library/user-event/dist/hover"
+
 const socket = io('http://localhost:3001', {"autoConnect": false})
 
 export const Grid = () => {
@@ -18,6 +18,8 @@ export const Grid = () => {
 
   const paint = (field: IFields, e: React.MouseEvent<HTMLDivElement>) => {
     socket.connect()
+    
+    console.log(socket);
     
     fields.find(f => {
       if(f.position === field.position){
