@@ -1,16 +1,16 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { io } from "socket.io-client";
-
-const socket = io('http://localhost:3001', {"autoConnect": false})
 
 export const Rooms = () => {
   const [roomName, setRoomName] = useState("")
+  const [rooms, setRooms] = useState("")
 
   const createRoom = () => {
-    socket.connect()
-    socket.emit("new room", roomName)
+    axios.post('http://localhost:3001/rooms', {room: roomName})
+    .then(res => {
+      console.log(res);
+    })
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
