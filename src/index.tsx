@@ -19,7 +19,7 @@ root.render(
       <Routes>
         <Route path="/" element={<Layout/>}>
           <Route index element={<Startpage />} />
-          <Route path="room" element={<InRoom/>}/>
+          <Route path="/:room" element={<InRoom/>}/>
           <Route path="rooms" element={<Rooms/>}/>
         </Route>
       </Routes>
