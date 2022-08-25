@@ -10,12 +10,12 @@ export const Grid = () => {
   const [fields, setFields] = useState<IFields[]>([])
   const [colors, setColors] = useState<IColors[]>([])
   const [myColor, setMyColor] = useState("white");
+ 
 
-  // let mycolorpicker = ["green", "yellow", "orange", "black"]
-  //let myColor = ""
+  let testFacit = [
+   
+  ]
 
-  // mycolorpicker.splice(0,1);
-  // socket.emit("color", mycolorpicker);
 
   useEffect(() => {
     axios.get<IFields[]>('http://localhost:3001/fields')
@@ -26,35 +26,32 @@ export const Grid = () => {
 
   useEffect(() => {
 
+
     //kopplar upp vid första load
     socket.connect()
-
 
     axios.get<IColors[]>('http://localhost:3001/colors')
       .then(res => {
         setColors(res.data)
-        console.log(res.data);
-
       })
-  }, [])
-
-  useEffect(() => {
-    socket.on("updateColors", function(msg){
-      axios.get<IColors[]>('http://localhost:3001/colors')
-      .then(res => {
-        setColors(res.data)
-      })
-      //console.log("du vill" + msg.color);
-    })
   }, [myColor])
 
+  useEffect(() => {
+    socket.connect()
+  }, [])
+
+  socket.on("updateColors", function (msg) {
+    setColors(msg)
+  })
+
   const paint = (field: IFields, e: React.MouseEvent<HTMLDivElement>) => {
-    //socket.connect()
 
     fields.find(f => {
       if (f.position === field.position) {
-        if (field.color != "white") {
-          setMyColor("white");
+        if (field.color !== "white") {
+          field.color = "white"
+          socket.emit("drawing", field)
+          return
         }
         field.color = myColor
         socket.emit("drawing", field)
@@ -64,10 +61,15 @@ export const Grid = () => {
 
   function pickColor(color: string) {
     socket.emit("color", color);
-    console.log(color);
     setMyColor(color)
-    //socket.emit("drawing", field)
+  }
 
+  function printFacit(){
+   
+    testFacit = fields;
+    console.log(testFacit);
+    
+    
   }
 
 
@@ -76,7 +78,7 @@ export const Grid = () => {
       <div key={field.position} id={field.position} className="pixel"
         onMouseEnter={
           (e) => {
-            if (e.currentTarget.style.backgroundColor != "white") {
+            if (e.currentTarget.style.backgroundColor !== "white") {
               e.currentTarget.style.backgroundColor = "white"
             }
             else { e.currentTarget.style.backgroundColor = myColor }
@@ -98,9 +100,24 @@ export const Grid = () => {
     )
   })
 
-  return (<div id="grid">{renderGrid}
-    <div>
-      {colorsToPickFrom}
+  return (<>
+    {/* {colors.length >= 0 && <> */}
+
+    <button onClick={printFacit}>se facit du ritat</button>
+
+    <h1>{colors.length}</h1>
+    <h1>{myColor}</h1>
+    <div id="grid">{renderGrid}
+      <div>
+        {colorsToPickFrom}
+      </div>
     </div>
-  </div>)
+    {/* </>
+    } */}
+    
+
+
+
+    {/* {colors.length == 0 && <div>rummet är tyvörr fullt, prova ett annat rum</div>} */}
+  </>)
 }
