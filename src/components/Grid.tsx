@@ -7,7 +7,7 @@ const socket = io('http://localhost:3001', {"autoConnect": false})
 
 export const Grid = () => {
   const [fields, setFields] = useState<IFields[]>([])
-  const myColor = "lightgreen"
+  let myColor = "green"
 
   useEffect(() => {
     axios.get<IFields[]>('http://localhost:3001/fields')
@@ -21,19 +21,30 @@ export const Grid = () => {
     
     fields.find(f => {
       if(f.position === field.position){
+        if(field.color != "white"){
+          myColor = "white";
+        }
         field.color = myColor
         socket.emit("drawing", field)
-        console.log(fields);
       }
     }) 
   }
 
   let renderGrid = fields.map(field => {
-    return(<div key={field.position} id={field.position} className="pixel" 
-        onMouseEnter={(e) => {e.currentTarget.style.backgroundColor = myColor}}
+    return(
+    <div key={field.position} id={field.position} className="pixel" 
+        onMouseEnter={
+          (e) => {
+            if(e.currentTarget.style.backgroundColor != "white" && e.currentTarget.style.backgroundColor != myColor){
+              e.currentTarget.style.backgroundColor = "white"
+            }
+            else{e.currentTarget.style.backgroundColor = myColor}
+          }
+        }
         onMouseLeave={(e) => {e.currentTarget.style.backgroundColor = field.color}}
         onClick={(e) => paint(field, e)} style={{backgroundColor: field.color}}>
-      </div>)
+    </div>
+      )
   })
 
   return(<div id="grid">{renderGrid}</div>)
