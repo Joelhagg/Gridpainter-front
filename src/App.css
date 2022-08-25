@@ -2,18 +2,7 @@
   text-align: center;
 }
 
-#gridContainer{
-
-  border: 1px solid red;
-  height: 800px;
-  width: 800px;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-}
-
-.pixel{
-  border: 1px solid blue;
-  height: 50px;
-  width: 50px;
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
 }
