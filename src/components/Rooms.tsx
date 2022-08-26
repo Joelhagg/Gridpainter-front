@@ -27,7 +27,7 @@ export const Rooms = () => {
   const createRoom = () => {
 
     socket.emit('createRoom', {name: roomName, id: socket.io.engine.id})
-
+    navigate('/roomName')
   }
 
 
