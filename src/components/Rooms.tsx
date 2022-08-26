@@ -2,11 +2,15 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IRoom } from "./models/IRoom";
+import { io } from "socket.io-client"
+
+const socket = io('http://localhost:3001', { "autoConnect" : false })
 
 export const Rooms = () => {
   const navigate = useNavigate()
   const [roomName, setRoomName] = useState("")
   const [rooms, setRooms] = useState<IRoom[]>([])
+
 
   async function getRooms() {
     let response = await axios.get<IRoom[]>('http://localhost:3001/rooms')
@@ -20,10 +24,14 @@ export const Rooms = () => {
   }, [])
 
   const createRoom = () => {
+    socket.connect()
     axios.post('http://localhost:3001/rooms', {room: roomName})
     .then(res => {
-      console.log(res);
+      socket.on("updatedRooms", (rooms) => {
+        setRooms(rooms.data)
+      })
     })
+    navigate("/" + roomName)
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
