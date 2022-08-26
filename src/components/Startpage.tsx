@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Startpage.css";
+import { socket } from "./Layout";
 
 export const Startpage = () => {
   const navigate = useNavigate();
