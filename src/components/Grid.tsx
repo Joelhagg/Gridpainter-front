@@ -2518,15 +2518,15 @@ export const Grid = () => {
 ]
 
 
-  function test() {
-    var count = [0, 0];
-    for (var i in facit) {
+  function compareToFacit() {
+    let count = [0, 0];
+    for (let i in facit) {
       count[1]++; // total count
       if (fields[i].color === facit[i].color) {
         count[0]++; // match count
       }
     }
-    var percentage = count[0] / count[1] * 100 + "%";
+    let percentage = count[0] / count[1] * 100 + "%";
     console.log("percentage: " + percentage);
   }
 
@@ -2574,7 +2574,8 @@ export const Grid = () => {
   }
 
   function pickColor(color: string) {
-    socket.emit(color, color);
+    socket.emit("color", color);
+    
     setMyColor(color)
   }
 
@@ -2627,7 +2628,7 @@ export const Grid = () => {
       </div>
     </div>
 
-    <button onClick={test}>test</button>
+    <button onClick={compareToFacit}>rätta bilden</button>
 
 
     {/* </>
