@@ -2,8 +2,9 @@ import axios from "axios"
 import React, { useEffect, useState } from "react"
 import { IFields } from "./models/IFields"
 import { io } from "socket.io-client"
+
 import { IColors } from "./models/IColors"
-const socket = io('http://localhost:3001', { "autoConnect": false })
+const socket = io('http://localhost:3001', { "autoConnect" : false })
 
 export const Grid = () => {
   const [fields, setFields] = useState<IFields[]>([])
@@ -2559,6 +2560,11 @@ export const Grid = () => {
   }, [fields])
 
   useEffect(() => {
+
+
+    //kopplar upp vid första load
+    socket.connect()
+
     axios.get<IColors[]>('http://localhost:3001/colors')
       .then(res => {
         setColors(res.data)
