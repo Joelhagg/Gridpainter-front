@@ -30,6 +30,9 @@ code {
   border: 0.5px solid rgb(43, 43, 43);
 }
 
+.pixelFacit{
+}
+
 #facitGrid{
   display:grid;
   grid-template-columns: repeat(25, 10px);
