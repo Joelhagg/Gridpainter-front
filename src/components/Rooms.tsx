@@ -2,12 +2,14 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IRoom } from "./models/IRoom";
+
 import { socket } from "./Layout";
 
 export const Rooms = () => {
   const navigate = useNavigate()
   const [roomName, setRoomName] = useState("")
   const [rooms, setRooms] = useState<IRoom[]>([])
+
 
   async function getRooms() {
     let response = await axios.get<IRoom[]>('http://localhost:3001/rooms')
@@ -23,7 +25,9 @@ export const Rooms = () => {
   }, [])
 
   const createRoom = () => {
+
     socket.emit('createRoom', {name: roomName, id: socket.io.engine.id})
+
   }
 
 

@@ -29,3 +29,11 @@ code {
 .pixel{
   border: 0.5px solid rgb(43, 43, 43);
 }
+
+#facitGrid{
+  display:grid;
+  grid-template-columns: repeat(25, 10px);
+  grid-template-rows: repeat(25, 10px);
+  justify-content: center;
+  margin-top: 20px;
+}
