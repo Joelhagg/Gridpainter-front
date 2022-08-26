@@ -63,7 +63,12 @@ export const Grid = () => {
   }
 
   function pickColor(color: string) {
+
     socket.emit("color", color);
+
+    if(myColor !== "white"){
+      socket.emit("colorChange", myColor);
+    }
 
     setMyColor(color)
   }
