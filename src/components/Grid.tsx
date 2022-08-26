@@ -4,6 +4,7 @@ import { IFields } from "./models/IFields"
 import { io } from "socket.io-client"
 
 import { IColors } from "./models/IColors"
+import { log } from "console"
 const socket = io('http://localhost:3001', { "autoConnect": false })
 
 export const Grid = () => {
@@ -2580,11 +2581,16 @@ export const Grid = () => {
     for (let i in facit) {
       count[1]++; // total count
       if (fields[i].color === facit[i].color) {
-        count[0]++; // match count
+        if(fields[i].color === "white" && facit[i].color === "white") {
+          count[1]--;
+        }
+        else{count[0]++;} // match count
       }
     }
     let percentage = count[0] / count[1] * 100 + "%";
     console.log("percentage: " + percentage);
+    console.log("count 0)" + count[0]);
+    console.log("count1)" + count[1]);
     alert("percentage: " + percentage);
   }
 
