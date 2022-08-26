@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IRoom } from "./models/IRoom";
+import { socket } from "./Layout";
 
 export const Rooms = () => {
   const navigate = useNavigate()
@@ -14,17 +15,17 @@ export const Rooms = () => {
   }
 
   useEffect(() => {
+    socket.connect()
+
     getRooms().then(res => {
       setRooms(res)
     })
   }, [])
 
   const createRoom = () => {
-    axios.post('http://localhost:3001/rooms', {room: roomName})
-    .then(res => {
-      console.log(res);
-    })
+    socket.emit('createRoom', {name: roomName, id: socket.io.engine.id})
   }
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setRoomName(e.currentTarget.value)
@@ -32,8 +33,8 @@ export const Rooms = () => {
 
   let renderRooms = rooms.map((room, i) => {
     return(<div key={i}>
-      {room.room}
-      <button onClick={() => {navigate(`/${room.room}`)}}>Join</button>
+      {room.name}
+      <button onClick={() => {navigate(`/${room.name}`)}}>Join</button>
     </div>)
   })
 

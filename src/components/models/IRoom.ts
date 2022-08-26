@@ -1,3 +1,5 @@
 export interface IRoom{
-  room: string
+  name: string,
+  id: string,
+  savedImgs: []
 }
