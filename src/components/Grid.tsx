@@ -11,7 +11,6 @@ export const Grid = () => {
   const [colors, setColors] = useState<IColors[]>([])
   const [myColor, setMyColor] = useState("white");
 
-
   let testFacit = []
 
   let facit = [
@@ -2517,18 +2516,8 @@ export const Grid = () => {
     }
 ]
 
-
-  function compareToFacit() {
-    let count = [0, 0];
-    for (let i in facit) {
-      count[1]++; // total count
-      if (fields[i].color === facit[i].color) {
-        count[0]++; // match count
-      }
-    }
-    let percentage = count[0] / count[1] * 100 + "%";
-    console.log("percentage: " + percentage);
-  }
+  /////////////////////////////////// -- USEEFFECT --     //////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////
 
 
   useEffect(() => {
@@ -2538,11 +2527,8 @@ export const Grid = () => {
       })
   }, [fields])
 
+
   useEffect(() => {
-
-
-    //kopplar upp vid första load
-    socket.connect()
 
     axios.get<IColors[]>('http://localhost:3001/colors')
       .then(res => {
@@ -2554,9 +2540,14 @@ export const Grid = () => {
     socket.connect()
   }, [])
 
+
   socket.on("updateColors", function (msg) {
     setColors(msg)
   })
+
+
+    /////////////////////////////////// -- FUNKTIONER --     //////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////
 
   const paint = (field: IFields, e: React.MouseEvent<HTMLDivElement>) => {
 
@@ -2580,13 +2571,24 @@ export const Grid = () => {
   }
 
   function printFacit() {
-
     testFacit = fields;
     console.log(testFacit);
-
-
   }
 
+  function compareToFacit() {
+    let count = [0, 0];
+    for (let i in facit) {
+      count[1]++; // total count
+      if (fields[i].color === facit[i].color) {
+        count[0]++; // match count
+      }
+    }
+    let percentage = count[0] / count[1] * 100 + "%";
+    console.log("percentage: " + percentage);
+  }
+  
+  /////////////////////////////////// -- HTML --     //////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////
 
   let renderGrid = fields.map(field => {
     return (
@@ -2614,6 +2616,11 @@ export const Grid = () => {
 
     )
   })
+
+  /////////////////////////////////// -- JSX --     //////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////
 
   return (<>
     {/* {colors.length >= 0 && <> */}
