@@ -1,4 +1,3 @@
-import axios from "axios"
 import React, { useEffect, useState } from "react"
 import { IFields } from "./models/IFields"
 import { io } from "socket.io-client"
@@ -17,23 +16,6 @@ export const Grid = () => {
   /////////////////////////////////// -- USEEFFECT --     //////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
 
-
-  useEffect(() => {
-    axios.get<IFields[]>('http://localhost:3001/fields')
-      .then(res => {
-        setFields(res.data)
-      })
-  }, [fields])
-
-
-  useEffect(() => {
-
-    axios.get<IColors[]>('http://localhost:3001/colors')
-      .then(res => {
-        setColors(res.data)
-      })
-  }, [myColor])
-
   useEffect(() => {
     socket.connect()
   }, [])
@@ -43,6 +25,26 @@ export const Grid = () => {
     setColors(msg)
   })
 
+  socket.on("colors", function (msg) {
+    setColors(msg)
+  })
+
+  socket.on("history", function (msg) {
+    setFields(msg)
+  })
+
+  socket.on("drawing", function (msg) {
+  
+    let newArray = fields
+    for (let i = 0; i < fields.length; i++) {
+      const pixel = fields[i];
+      if (pixel.position === msg.position) {
+        newArray[i].color = msg.color;
+        setFields([...newArray]);
+        return
+      } 
+    }
+  })
 
   /////////////////////////////////// -- FUNKTIONER --     //////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
