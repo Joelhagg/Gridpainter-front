@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { socket } from "./Layout";
 
 interface ICloseProps {
@@ -7,23 +7,30 @@ interface ICloseProps {
 
 export const Chat = (Props: ICloseProps) => {
   const [message, setMessage] = useState("");
-  let room1 = 1;
+  const [messageReceived, setMessageReceived] = useState("");
+
+  // Lägg in props för att skicka med namnet på rummet osm man joinade
+  /*" props med namnet på rummet"*/
 
   const sendMessage = () => {
-    socket.emit("sendMessage", message, room1);
-    socket.on("message", (message, room1) => {
-      console.log("response", message, room1);
-    });
+    socket.emit("sendMessage", message);
   };
 
   // const checkMessage = () => {
   //   socket.on
 
   // }
+
+  useEffect(() => {
+    socket.on("receiveMessage", (message) => {
+      console.log(message);
+      setMessageReceived(message);
+    });
+  }, [socket]);
   return (
     <div>
       <br />
-      Woooo chatten öppnades
+      <h2>In-game Chat</h2>
       <input
         type="text"
         value={message}
@@ -33,6 +40,8 @@ export const Chat = (Props: ICloseProps) => {
       <button onClick={sendMessage}> Send </button>
       <button onClick={Props.closeClick}>Stäng</button>
       <br />
+      <h3>Messages</h3>
+      <p>{messageReceived}</p>
       <br />
     </div>
   );
