@@ -4,9 +4,12 @@ import { io } from "socket.io-client";
 
 import { IColors } from "./models/IColors";
 import Facit from "./../assets/facit.json";
+import { useParams } from "react-router-dom";
 const socket = io("http://localhost:3001", { autoConnect: false });
 
 export const Grid = () => {
+  // Här tar vi emot rummsnamnet i alla fall!!!!!!!!!!!
+  let room = useParams();
   const [fields, setFields] = useState<IFields[]>([]);
   const [colors, setColors] = useState<IColors[]>([]);
   const [myColor, setMyColor] = useState("white");
@@ -18,6 +21,7 @@ export const Grid = () => {
 
   useEffect(() => {
     socket.connect();
+    console.log("room in grid: ", room.room);
   }, []);
 
   socket.on("updateColors", function (msg) {
@@ -48,15 +52,17 @@ export const Grid = () => {
   //////////////////////////////////////////////////////////////////////////////////////
 
   const paint = (field: IFields, e: React.MouseEvent<HTMLDivElement>) => {
+    console.log("paint");
+
     fields.find((f) => {
       if (f.position === field.position) {
         if (field.color !== "white") {
           field.color = "white";
-          socket.emit("drawing", field);
+          socket.emit("drawing", { field: field, room: room.room });
           return;
         }
         field.color = myColor;
-        socket.emit("drawing", field);
+        socket.emit("drawing", { field: field, room: room.room });
       }
     });
   };
