@@ -6,51 +6,70 @@ import { IRoom } from "./models/IRoom";
 import { socket } from "./Layout";
 
 export const Rooms = () => {
-  const navigate = useNavigate()
-  const [roomName, setRoomName] = useState("")
-  const [rooms, setRooms] = useState<IRoom[]>([])
-
+  const navigate = useNavigate();
+  const [roomName, setRoomName] = useState("");
+  const [rooms, setRooms] = useState<IRoom[]>([]);
 
   async function getRooms() {
-    let response = await axios.get<IRoom[]>('http://localhost:3001/rooms')
-    return response.data
+    let response = await axios.get<IRoom[]>("http://localhost:3001/rooms");
+    return response.data;
   }
 
   useEffect(() => {
-    socket.connect()
+    socket.connect();
 
-    getRooms().then(res => {
-      setRooms(res)
-    })
-  }, [])
+    getRooms().then((res) => {
+      setRooms(res);
+    });
+  }, []);
 
   const createRoom = () => {
+    socket.emit("createRoom", { name: roomName, id: socket.io.engine.id });
+    joinRoom(roomName);
+    navigate(`/${roomName}`);
+  };
 
-    socket.emit('createRoom', {name: roomName, id: socket.io.engine.id})
-    navigate('/roomName')
-  }
+  const joinRoom = (roomName: any) => {
+    console.log("joinRoom", roomName);
 
+    socket.emit("join", roomName);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setRoomName(e.currentTarget.value)
-  }
+    setRoomName(e.currentTarget.value);
+  };
 
   let renderRooms = rooms.map((room, i) => {
-    return(<div key={i}>
-      {room.name}
-      <button onClick={() => {navigate(`/${room.name}`)}}>Join</button>
-    </div>)
-  })
+    return (
+      <div key={i}>
+        {room.name}
+        <button
+          onClick={() => {
+            navigate(`/${room.name}`);
+            joinRoom(room.name);
+          }}
+        >
+          Join
+        </button>
+      </div>
+    );
+  });
 
-  return(<div>
-    <div className="createRoomBox">
-      <input type="text" placeholder="Room name" required onChange={(e) => {handleChange(e)}}/>
-      <button onClick={createRoom}>Create room</button>
-    </div>
-
+  return (
     <div>
-      {renderRooms}
+      <div className="createRoomBox">
+        <input
+          type="text"
+          placeholder="Room name"
+          required
+          onChange={(e) => {
+            handleChange(e);
+          }}
+        />
+        <button onClick={createRoom}>Create room</button>
+      </div>
+
+      <div>{renderRooms}</div>
     </div>
-  </div>
-  )
-}
+  );
+};
