@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { socket } from "./Layout";
 
 interface ICloseProps {
@@ -6,20 +7,18 @@ interface ICloseProps {
 }
 
 export const Chat = (Props: ICloseProps) => {
+  let room = useParams();
   const [message, setMessage] = useState("");
   const [messageReceived, setMessageReceived] = useState("");
 
   // Lägg in props för att skicka med namnet på rummet osm man joinade
-  /*" props med namnet på rummet"*/
+  // Vi behöver även få med användaren och skicka med vårat message
+  /*" props med namnet på rummet och userName"*/
 
   const sendMessage = () => {
-    socket.emit("sendMessage", message);
+    socket.emit("sendMessage", { message: message, room: room.room });
+    console.log("room: ", room.room);
   };
-
-  // const checkMessage = () => {
-  //   socket.on
-
-  // }
 
   useEffect(() => {
     socket.on("receiveMessage", (message) => {
