@@ -14,9 +14,6 @@ export const Chat = (Props: ICloseProps) => {
   let recievedMessages: IChatMsg[] = [];
 
   const userName = "";
-  // Lägg in props eller useContext för att skicka med namnet på rummet osm man joinade
-  // Vi behöver även få med användaren och skicka med vårat message
-  /*" props med namnet på rummet och userName"*/
 
   const sendMessage = () => {
     socket.emit("sendMessage", {
