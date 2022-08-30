@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { socket } from "./Layout";
 import { IChatMsg } from "./models/IChatMsg";
+import "./styling/InRoom.scss"
 
 interface ICloseProps {
   closeClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
@@ -45,8 +46,8 @@ export const Chat = (Props: ICloseProps) => {
   });
 
   return (
-    <div>
-      <h2>In-game Chat</h2>
+    <div className="inGameChatBox">
+      <h3>In-game Chat</h3>
       <div className="messagesBox">{renderMessages}</div>
       <div className="newMsgBox">
         <input
@@ -55,9 +56,9 @@ export const Chat = (Props: ICloseProps) => {
           onChange={(event) => setMessage(event.target.value)}
           placeholder="message"
         />
-        <button onClick={sendMessage}> Send </button>
+        <button className="sendMsgBtn" onClick={sendMessage}> Send </button>
       </div>
-      <button onClick={Props.closeClick}>Stäng</button>
+      <button className="closeChatBtn" onClick={Props.closeClick}>--</button>
     </div>
   );
 };

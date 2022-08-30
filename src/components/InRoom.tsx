@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useParams } from "react-router-dom"
 import { Chat } from "./Chat"
 import { Grid } from "./Grid"
+import "./styling/InRoom.scss"
 
 export const InRoom = () => {
   let room = useParams()
@@ -15,8 +16,6 @@ export const InRoom = () => {
   return(<>
     <h2>{room.room}</h2>
     <Grid/>
-    <button onClick={() => {setChatOpen(true)}}>Chatt</button>
-
-    {chatOpen && <Chat closeClick={closeChat}/>}
+    {chatOpen ? <Chat closeClick={closeChat}/> : <button className="openChatBtn" onClick={() => {setChatOpen(true)}}>Chatt</button>}
   </>)
 }

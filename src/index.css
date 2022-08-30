@@ -40,3 +40,10 @@ code {
   justify-content: center;
   margin-top: 20px;
 }
+
+button{
+  border: none;
+  cursor: pointer;
+}
+
+@import url('././components/styling/InRoom.css');

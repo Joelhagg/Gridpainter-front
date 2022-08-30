@@ -1,0 +1,79 @@
+.openChatBtn{
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+  background-color: rgb(160, 178, 186);
+  padding: 5px 8px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 13px;
+  color: white;
+}
+
+.inGameChatBox{
+  box-sizing: border-box;
+  padding: 4px 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  row-gap: 4px;
+  position: fixed;
+  right: 5px;
+  bottom: 5px;
+  border-radius: 10px;
+  height: 35vh;
+  width: 18vw;
+  background-color: rgb(160, 178, 186);
+
+  h3{
+    margin:0;
+    padding-left: 5px;
+    font-size: 1rem;
+    height: 15%;
+    color: white;
+  }
+
+  .newMsgBox{
+    height:15%;
+    display:flex;
+    justify-content:space-between;
+    column-gap: 4px;
+
+    input{
+      width: 75%;
+      border: none;
+      border-radius: 9px;
+      padding: 4px;
+    }
+
+    .sendMsgBtn{
+      width: 25%;
+      border-radius: 10px;
+      background-color: rgb(88, 112, 112);
+      color: white;
+      font-weight: bold;
+      transition: all 0.4s;
+
+      &:hover{
+        background-color: rgb(98, 131, 101);
+      }
+    }
+  }
+  
+  .messagesBox {
+    height: 33vh;
+    background-color: white;
+    border-radius: 9px;
+  }
+
+  .closeChatBtn{
+    position: absolute;
+    top: 0;
+    right: 5px;
+    background-color: transparent;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    letter-spacing: -2px;
+  }
+}
