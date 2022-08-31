@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { socket } from "./Layout";
 import { IChatMsg } from "./models/IChatMsg";
-import "./styling/InRoom.scss"
+import "./styling/InRoom.scss";
 
 interface ICloseProps {
   closeClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
@@ -11,25 +11,22 @@ interface ICloseProps {
 export const Chat = (Props: ICloseProps) => {
   let room = useParams();
   const [message, setMessage] = useState("");
-  const [messageReceived, setMessageReceived] = useState("");
+  const [messageReceived, setMessageReceived] = useState<IChatMsg>(Object);
   let recievedMessages: IChatMsg[] = [];
-
-  const userName = "";
+  let userName = "Louise";
 
   const sendMessage = () => {
     socket.emit("sendMessage", {
-      message: message,
+      text: message,
       room: room.room,
       user: userName,
     });
-    console.log("room: ", room.room);
   };
 
   useEffect(() => {
     socket.on("receiveMessage", (message) => {
-      console.log(message);
+      console.log("message", message);
       setMessageReceived(message);
-      recievedMessages.push(message);
     });
   }, [socket]);
 
@@ -52,13 +49,17 @@ export const Chat = (Props: ICloseProps) => {
       <div className="newMsgBox">
         <input
           type="text"
-          value={message}
           onChange={(event) => setMessage(event.target.value)}
           placeholder="message"
         />
-        <button className="sendMsgBtn" onClick={sendMessage}> Send </button>
+        <button className="sendMsgBtn" onClick={sendMessage}>
+          {" "}
+          Send{" "}
+        </button>
       </div>
-      <button className="closeChatBtn" onClick={Props.closeClick}>--</button>
+      <button className="closeChatBtn" onClick={Props.closeClick}>
+        --
+      </button>
     </div>
   );
 };
