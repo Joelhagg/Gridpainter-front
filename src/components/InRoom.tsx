@@ -15,10 +15,11 @@ export const InRoom = () => {
     setChatOpen(false);
   };
 
+  // lägg till en socket.leave till back-enden
   const routeChange = () => {
-    navigate("/rooms");
-    // lägg till en socket.leave till back-enden
     socket.emit("leaveRoom", room);
+    navigate("/");
+    console.log(room.room);
   };
 
   return (
