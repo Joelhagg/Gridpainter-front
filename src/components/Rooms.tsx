@@ -24,15 +24,23 @@ export const Rooms = () => {
   }, []);
 
   const createRoom = () => {
-    socket.emit("createRoom", { name: roomName, id: socket.io.engine.id });
-    joinRoom(roomName);
+    const room = {
+      name: roomName,
+      id: socket.io.engine.id,
+      nickname: localStorage.getItem("nickname"),
+    };
+    socket.emit("createRoom", room);
     navigate(`/${roomName}`);
   };
 
   const joinRoom = (roomName: any) => {
     console.log("joinRoom", roomName);
-
-    socket.emit("join", roomName);
+    const room = {
+      name: roomName,
+      id: socket.io.engine.id,
+      nickname: localStorage.getItem("nickname"),
+    };
+    socket.emit("join", room);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
