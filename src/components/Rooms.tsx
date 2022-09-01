@@ -42,8 +42,13 @@ export const Rooms = () => {
       nickname: localStorage.getItem("nickname"),
     };
     socket.emit("join", room);
+  };
 
-    socket.emit("nickname", nickname);
+  const deleteRoom = (room: any) => {
+    console.log(socket.io.engine.id);
+
+    console.log("room to delete: ", room);
+    socket.emit("deleteRoom", socket.io.engine.id);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,6 +66,13 @@ export const Rooms = () => {
           }}
         >
           Join
+        </button>
+        <button
+          onClick={() => {
+            deleteRoom(room);
+          }}
+        >
+          Delete
         </button>
       </div>
     );
