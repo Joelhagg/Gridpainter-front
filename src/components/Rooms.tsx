@@ -8,8 +8,8 @@ import { socket } from "./Layout";
 export const Rooms = () => {
   const navigate = useNavigate();
   const [roomName, setRoomName] = useState("");
+
   const [rooms, setRooms] = useState<IRoom[]>([]);
-  let nickname = "Louise";
   async function getRooms() {
     let response = await axios.get<IRoom[]>("http://localhost:3001/rooms");
     return response.data;
@@ -33,6 +33,7 @@ export const Rooms = () => {
     navigate(`/${roomName}`);
   };
 
+  // Måste få till något bättre än any !!!!!!
   const joinRoom = (roomName: any) => {
     console.log("joinRoom", roomName);
 
@@ -42,9 +43,11 @@ export const Rooms = () => {
       nickname: localStorage.getItem("nickname"),
     };
     socket.emit("join", room);
-
-    socket.emit("nickname", nickname);
   };
+
+  // const deleteRoom = (roomName) => {
+  //   console.log(roomName);
+  // };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setRoomName(e.currentTarget.value);
@@ -62,6 +65,7 @@ export const Rooms = () => {
         >
           Join
         </button>
+        {/* <button onClick={deleteRoom(room.name)}>Delete</button> */}
       </div>
     );
   });
