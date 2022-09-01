@@ -11,8 +11,8 @@ interface ICloseProps {
 export const Chat = (Props: ICloseProps) => {
   let room = useParams();
   const [message, setMessage] = useState("");
-  const [messageReceived, setMessageReceived] = useState<IChatMsg>(Object);
-  let recievedMessages: IChatMsg[] = [];
+  const [msg, setMsg] = useState<IChatMsg[]>([])
+  let messages: IChatMsg[] = []
   let userName = "Louise";
 
   const sendMessage = () => {
@@ -21,16 +21,20 @@ export const Chat = (Props: ICloseProps) => {
       room: room.room,
       user: userName,
     });
+    setMessage("") 
   };
 
   useEffect(() => {
-    socket.on("receiveMessage", (message) => {
-      console.log("message", message);
-      setMessageReceived(message);
-    });
-  }, [socket]);
+    socket.on('receiveMessage',( data:IChatMsg) => {
+      messages.push(data)
+      setMsg(msg => [...msg, data])
+    })
+    return () => {
+      socket.off('receiveMessage')
+    }
+  }, []);
 
-  let renderMessages = recievedMessages.map((message, i) => {
+  let renderMessages = msg.map((message, i) => {
     return (
       <div
         key={i}
@@ -48,13 +52,14 @@ export const Chat = (Props: ICloseProps) => {
       <div className="messagesBox">{renderMessages}</div>
       <div className="newMsgBox">
         <input
+          className="messageInput"
           type="text"
           onChange={(event) => setMessage(event.target.value)}
           placeholder="message"
+          value={message}
         />
         <button className="sendMsgBtn" onClick={sendMessage}>
-          {" "}
-          Send{" "}
+          Send
         </button>
       </div>
       <button className="closeChatBtn" onClick={Props.closeClick}>
