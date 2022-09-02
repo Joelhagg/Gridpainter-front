@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Startpage.css";
-import { socket } from "./Layout";
+import { SocketContext } from "../context/Socket";
 
 export const Startpage = () => {
+  const socket = useContext(SocketContext)
   const navigate = useNavigate();
   const [nickname, setNickname] = useState("");
 

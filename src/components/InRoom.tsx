@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { SocketContext } from "../context/Socket";
 import { Chat } from "./Chat";
 import { Grid } from "./Grid";
-import { socket } from "./Layout";
 import "./styling/InRoom.scss";
 
 export const InRoom = () => {
+  const socket = useContext(SocketContext)
   let room = useParams();
   let navigate = useNavigate();
 

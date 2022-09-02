@@ -1,11 +1,11 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IRoom } from "./models/IRoom";
-
-import { socket } from "./Layout";
+import { SocketContext } from "../context/Socket";
 
 export const Rooms = () => {
+  const socket = useContext(SocketContext)
   const navigate = useNavigate();
   const [roomName, setRoomName] = useState("");
   const [rooms, setRooms] = useState<IRoom[]>([]);
@@ -17,7 +17,7 @@ export const Rooms = () => {
 
   useEffect(() => {
     // den här ska va kvar! Men kan få flyttas om den har en bättre plats :)
-    socket.connect();
+    //socket.connect();
     getRooms().then((res) => {
       setRooms(res);
     });
