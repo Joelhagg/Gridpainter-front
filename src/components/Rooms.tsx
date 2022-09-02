@@ -45,10 +45,7 @@ export const Rooms = () => {
   };
 
   const deleteRoom = (room: any) => {
-    console.log(socket.io.engine.id);
-
-    console.log("room to delete: ", room);
-    socket.emit("deleteRoom", socket.io.engine.id);
+    socket.emit("deleteRoom", room._id);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
