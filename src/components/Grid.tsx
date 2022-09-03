@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { IFields } from "./models/IFields";
 import { io } from "socket.io-client";
 
 import { IColors } from "./models/IColors";
 import Facit from "./../assets/facit.json";
 import { useParams } from "react-router-dom";
-const socket = io("http://localhost:3001", { autoConnect: false });
+import { SocketContext } from "../context/Socket";
+//const socket = io("http://localhost:3001", { autoConnect: false });
 
 export const Grid = () => {
+  const socket = useContext(SocketContext)
   const [fields, setFields] = useState<IFields[]>([]);
   const [colors, setColors] = useState<IColors[]>([]);
   const [myColor, setMyColor] = useState("white");
@@ -16,10 +18,6 @@ export const Grid = () => {
 
   /////////////////////////////////// -- USEEFFECT --     //////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
-
-  useEffect(() => {
-    socket.connect();
-  }, []);
 
   socket.on("updateColors", function (msg) {
     setColors(msg);

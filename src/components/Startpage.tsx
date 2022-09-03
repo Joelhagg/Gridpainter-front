@@ -26,6 +26,7 @@ export const Startpage = () => {
       <button
         onClick={() => {
           localStorage.setItem("nickname", nickname);
+          socket.emit('username', nickname)
           navigate("/rooms");
         }}
       >

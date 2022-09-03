@@ -14,13 +14,11 @@ export const Chat = (Props: ICloseProps) => {
   const [message, setMessage] = useState("");
   const [msg, setMsg] = useState<IChatMsg[]>([])
   let messages: IChatMsg[] = []
-  let userName = "Louise";
 
   const sendMessage = () => {
     socket.emit("sendMessage", {
       text: message,
       room: room.room,
-      user: userName,
     });
     setMessage("") 
   };
