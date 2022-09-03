@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { socket } from "./Layout";
+import { SocketContext } from "../context/Socket";
 import { IChatMsg } from "./models/IChatMsg";
 import "./styling/InRoom.scss";
 
@@ -9,17 +9,16 @@ interface ICloseProps {
 }
 
 export const Chat = (Props: ICloseProps) => {
+  const socket = useContext(SocketContext)
   let room = useParams();
   const [message, setMessage] = useState("");
   const [msg, setMsg] = useState<IChatMsg[]>([])
   let messages: IChatMsg[] = []
-  let userName = "Louise";
 
   const sendMessage = () => {
     socket.emit("sendMessage", {
       text: message,
       room: room.room,
-      user: userName,
     });
     setMessage("") 
   };

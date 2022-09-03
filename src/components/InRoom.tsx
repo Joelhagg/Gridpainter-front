@@ -1,15 +1,25 @@
-import { useState } from "react";
+import { emit } from "process";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { SocketContext } from "../context/Socket";
 import { Chat } from "./Chat";
 import { Grid } from "./Grid";
-import { socket } from "./Layout";
 import "./styling/InRoom.scss";
 
 export const InRoom = () => {
+  const socket = useContext(SocketContext)
   let room = useParams();
   let navigate = useNavigate();
+  const [fields, setFields] = useState([])
+  const [colors, setColors] = useState([])
 
   const [chatOpen, setChatOpen] = useState(false);
+
+  useEffect(() => {
+    socket.emit('renderGame')
+    socket.on('history', setFields)
+    socket.on('colors', setColors)
+  }, []);
 
   const closeChat = () => {
     setChatOpen(false);
