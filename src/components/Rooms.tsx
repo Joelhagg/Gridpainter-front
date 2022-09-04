@@ -5,7 +5,7 @@ import { IRoom } from "./models/IRoom";
 import { SocketContext } from "../context/Socket";
 
 export const Rooms = () => {
-  const socket = useContext(SocketContext)
+  const socket = useContext(SocketContext);
   const navigate = useNavigate();
   const [roomName, setRoomName] = useState("");
   const [rooms, setRooms] = useState<IRoom[]>([]);
@@ -41,6 +41,7 @@ export const Rooms = () => {
       id: socket.io.engine.id,
       nickname: localStorage.getItem("nickname"),
     };
+    socket.emit("leaveBeforeJoining", socket.id);
     socket.emit("join", room);
   };
 
