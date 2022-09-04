@@ -7,18 +7,18 @@ import { Grid } from "./Grid";
 import "./styling/InRoom.scss";
 
 export const InRoom = () => {
-  const socket = useContext(SocketContext)
+  const socket = useContext(SocketContext);
   let room = useParams();
   let navigate = useNavigate();
-  const [fields, setFields] = useState([])
-  const [colors, setColors] = useState([])
+  const [fields, setFields] = useState([]);
+  const [colors, setColors] = useState([]);
 
   const [chatOpen, setChatOpen] = useState(false);
 
   useEffect(() => {
-    socket.emit('renderGame')
-    socket.on('history', setFields)
-    socket.on('colors', setColors)
+    socket.emit("renderGame");
+    socket.on("history", setFields);
+    socket.on("colors", setColors);
   }, []);
 
   const closeChat = () => {
