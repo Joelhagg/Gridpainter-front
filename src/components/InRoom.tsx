@@ -16,7 +16,7 @@ export const InRoom = () => {
   const [chatOpen, setChatOpen] = useState(false);
 
   useEffect(() => {
-    socket.emit("renderGame");
+    socket.emit("renderGame", room);
     socket.on("history", setFields);
     socket.on("colors", setColors);
   }, []);
