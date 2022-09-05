@@ -4,7 +4,7 @@ import "./Startpage.css";
 import { SocketContext } from "../context/Socket";
 
 export const Startpage = () => {
-  const socket = useContext(SocketContext)
+  const socket = useContext(SocketContext);
   const navigate = useNavigate();
   const [nickname, setNickname] = useState("");
 
@@ -12,26 +12,28 @@ export const Startpage = () => {
     setNickname(localStorage.getItem("nickname") ?? "");
   }, []);
 
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    localStorage.setItem("nickname", nickname);
+    socket.emit("username", nickname);
+    navigate("/rooms");
+  };
+
   return (
     <div className="startpage-container">
-      <input
-        type="text"
-        value={nickname}
-        placeholder="Namn"
-        onChange={(event) => {
-          setNickname(event.target.value);
-        }}
-      />
-
-      <button
-        onClick={() => {
-          localStorage.setItem("nickname", nickname);
-          socket.emit('username', nickname)
-          navigate("/rooms");
-        }}
-      >
-        Gå till Rum
-      </button>
+      <form onSubmit={handleSubmit}>
+        <label>Ange nickname: </label>
+        <input
+          type="text"
+          name="nickname"
+          id="nickname"
+          onChange={(e) => setNickname(e.target.value)}
+          value={nickname}
+          placeholder="Namn"
+          required
+        />
+        <input type="submit" value="Spara" />
+      </form>
     </div>
   );
 };

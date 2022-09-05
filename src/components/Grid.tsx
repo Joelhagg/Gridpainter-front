@@ -29,7 +29,7 @@ export const Grid = () => {
     });
 
     socket.on("history", function (msg) {
-      console.log("history", msg);
+      console.log("32 history", msg);
       setFields(msg);
     });
 
