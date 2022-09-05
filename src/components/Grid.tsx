@@ -9,7 +9,8 @@ import { SocketContext } from "../context/Socket";
 //const socket = io("http://localhost:3001", { autoConnect: false });
 
 export const Grid = () => {
-  const socket = useContext(SocketContext)
+  const socket = useContext(SocketContext);
+  let { room } = useParams();
   const [fields, setFields] = useState<IFields[]>([]);
   const [colors, setColors] = useState<IColors[]>([]);
   const [myColor, setMyColor] = useState("white");
@@ -18,30 +19,32 @@ export const Grid = () => {
 
   /////////////////////////////////// -- USEEFFECT --     //////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
+  useEffect(() => {
+    socket.on("updateColors", function (msg) {
+      setColors(msg);
+    });
 
-  socket.on("updateColors", function (msg) {
-    setColors(msg);
-  });
+    socket.on("colors", function (msg) {
+      setColors(msg);
+    });
 
-  socket.on("colors", function (msg) {
-    setColors(msg);
-  });
+    socket.on("history", function (msg) {
+      console.log("history", msg);
+      setFields(msg);
+    });
 
-  socket.on("history", function (msg) {
-    setFields(msg);
-  });
-
-  socket.on("drawing", function (msg) {
-    let newArray = fields;
-    for (let i = 0; i < fields.length; i++) {
-      const pixel = fields[i];
-      if (pixel.position === msg.position) {
-        newArray[i].color = msg.color;
-        setFields([...newArray]);
-        return;
-      }
-    }
-  });
+    socket.on("drawing", (data) => {
+      const gridState = data;
+      console.log("drawing", data);
+      setFields([...gridState]);
+    });
+    return () => {
+      socket.off("updateColors");
+      socket.off("colors");
+      socket.off("history");
+      socket.off("drawing");
+    };
+  }, []);
 
   /////////////////////////////////// -- FUNKTIONER --     //////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
@@ -51,20 +54,33 @@ export const Grid = () => {
       if (f.position === field.position) {
         if (field.color !== "white") {
           field.color = "white";
-          socket.emit("drawing", field);
+          socket.emit("drawing", {
+            field,
+            room,
+          });
           return;
         }
         field.color = myColor;
-        socket.emit("drawing", field);
+        socket.emit("drawing", {
+          field,
+          room,
+        });
       }
     });
   };
 
   function pickColor(color: string) {
-    socket.emit("color", color);
-
     if (myColor !== "white") {
-      socket.emit("colorChange", myColor);
+      socket.emit("colorChange", {
+        oldColor: myColor,
+        newColor: color,
+        room,
+      });
+    } else {
+      socket.emit("pickedColor", {
+        color,
+        room,
+      });
     }
 
     setMyColor(color);
