@@ -49,8 +49,9 @@ export const Rooms = () => {
     socket.emit("deleteRoom", { _id: room._id, name: room.name });
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: any) => {
     setRoomName(e.currentTarget.value);
+    createRoom();
   };
 
   let renderRooms = rooms.map((room, i) => {
@@ -78,17 +79,20 @@ export const Rooms = () => {
 
   return (
     <div>
-      <div className="createRoomBox">
-        <input
-          type="text"
-          placeholder="Room name"
-          required
-          onChange={(e) => {
-            handleChange(e);
-          }}
-        />
-        <button onClick={createRoom}>Create room</button>
-      </div>
+      <form onSubmit={handleChange}>
+        <div className="createRoomBox">
+          <input
+            type="text"
+            name="roomName"
+            id="roomName"
+            placeholder="Room name"
+            required
+            value={roomName}
+            onChange={(e) => setRoomName(e.target.value)}
+          />
+          <input type="submit" value="Skapa rum" />
+        </div>
+      </form>
 
       <div>{renderRooms}</div>
     </div>
