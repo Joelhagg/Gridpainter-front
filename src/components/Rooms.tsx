@@ -21,6 +21,7 @@ export const Rooms = () => {
     getRooms().then((res) => {
       setRooms(res);
     });
+    console.log("in useEffect");
   }, []);
 
   const createRoom = () => {
@@ -46,6 +47,9 @@ export const Rooms = () => {
   };
 
   const deleteRoom = (room: any) => {
+    rooms.splice(rooms.indexOf(room) - 1, 1);
+    setRooms(rooms);
+
     socket.emit("deleteRoom", { _id: room._id, name: room.name });
   };
 
