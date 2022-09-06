@@ -4,33 +4,29 @@ import { SocketContext } from "../context/Socket";
 import { IChatMsg } from "./models/IChatMsg";
 import "./styling/InRoom.scss";
 
-interface ICloseProps {
-  closeClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
-}
-
-export const Chat = (Props: ICloseProps) => {
-  const socket = useContext(SocketContext)
+export const Chat = () => {
+  const socket = useContext(SocketContext);
   let room = useParams();
   const [message, setMessage] = useState("");
-  const [msg, setMsg] = useState<IChatMsg[]>([])
-  let messages: IChatMsg[] = []
+  const [msg, setMsg] = useState<IChatMsg[]>([]);
+  let messages: IChatMsg[] = [];
 
   const sendMessage = () => {
     socket.emit("sendMessage", {
       text: message,
       room: room.room,
     });
-    setMessage("") 
+    setMessage("");
   };
 
   useEffect(() => {
-    socket.on('receiveMessage',( data:IChatMsg) => {
-      messages.push(data)
-      setMsg(msg => [...msg, data])
-    })
+    socket.on("receiveMessage", (data: IChatMsg) => {
+      messages.push(data);
+      setMsg((msg) => [...msg, data]);
+    });
     return () => {
-      socket.off('receiveMessage')
-    }
+      socket.off("receiveMessage");
+    };
   }, []);
 
   let renderMessages = msg.map((message, i) => {
@@ -61,9 +57,6 @@ export const Chat = (Props: ICloseProps) => {
           Send
         </button>
       </div>
-      <button className="closeChatBtn" onClick={Props.closeClick}>
-        --
-      </button>
     </div>
   );
 };
