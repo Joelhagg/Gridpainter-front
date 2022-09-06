@@ -6,11 +6,9 @@ import { SocketContext } from "../context/Socket";
 export const Startpage = () => {
   const socket = useContext(SocketContext);
   const navigate = useNavigate();
-  const [nickname, setNickname] = useState("");
-
-  useEffect(() => {
-    setNickname(localStorage.getItem("nickname") ?? "");
-  }, []);
+  const [nickname, setNickname] = useState(
+    localStorage.getItem("nickname") ?? ""
+  );
 
   const handleSubmit = (e: any) => {
     e.preventDefault();

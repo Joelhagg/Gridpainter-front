@@ -6,6 +6,7 @@ import { IColors } from "./models/IColors";
 import Facit from "./../assets/facit.json";
 import { useParams } from "react-router-dom";
 import { SocketContext } from "../context/Socket";
+import { UsernameContext } from "../context/UsernameContext";
 //const socket = io("http://localhost:3001", { autoConnect: false });
 
 export const Grid = () => {
@@ -14,25 +15,26 @@ export const Grid = () => {
   const [fields, setFields] = useState<IFields[]>([]);
   const [colors, setColors] = useState<IColors[]>([]);
   const [myColor, setMyColor] = useState("white");
-  const [nickname] = useState(localStorage.getItem("nickname"));
+  const { username } = useContext(UsernameContext);
 
   let testFacit = [];
   /////////////////////////////////// -- USEEFFECT --     //////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
   useEffect(() => {
     socket.on("updateColors", function (msg) {
+      console.log("updateCOlors", msg);
       const myServerColor = msg.find((colorInPalette: any) => {
-        return colorInPalette.takenBy === nickname;
+        return colorInPalette.takenBy === username;
       });
+      console.log("myServerColor", myServerColor);
       if (myServerColor !== "white") {
-        setMyColor(myServerColor);
+        setMyColor(myServerColor.color);
       } else {
         setMyColor("white");
       }
 
       setColors(msg);
     });
-
     socket.on("colors", function (msg) {
       setColors(msg);
     });
@@ -65,7 +67,6 @@ export const Grid = () => {
           socket.emit("drawing", {
             field,
             room,
-            nickname,
           });
           return;
         }
@@ -73,7 +74,6 @@ export const Grid = () => {
         socket.emit("drawing", {
           field,
           room,
-          nickname,
         });
       }
     });
@@ -81,22 +81,11 @@ export const Grid = () => {
 
   function pickColor(color: IColors) {
     if (color.takenBy === "") {
-      if (myColor !== "white") {
-        console.log("colorChange", color, myColor);
-        socket.emit("colorChange", {
-          oldColor: myColor,
-          newColor: color.color,
-          room,
-          nickname,
-        });
-      } else {
-        console.log("pickColor", color, myColor, nickname);
-        socket.emit("pickedColor", {
-          color: color.color,
-          room,
-          nickname,
-        });
-      }
+      console.log("colorChange", color, myColor);
+      socket.emit("colorChange", {
+        newColor: color.color,
+        room,
+      });
 
       setMyColor(color.color);
     }
@@ -188,9 +177,6 @@ export const Grid = () => {
       {/* {colors.length >= 0 && <> */}
 
       <button onClick={printFacit}>se facit du ritat</button>
-
-      <h1>{colors.length}</h1>
-      <h1>{myColor}</h1>
       <div id="grid">
         {renderGrid}
         <div>{colorsToPickFrom}</div>
