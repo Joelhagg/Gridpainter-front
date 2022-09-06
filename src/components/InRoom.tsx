@@ -38,18 +38,7 @@ export const InRoom = () => {
       <button onClick={routeChange}>Lämna rummet</button>
       <h2>Du är med i rum: {room.room}</h2>
       <Grid />
-      {chatOpen ? (
-        <Chat closeClick={closeChat} />
-      ) : (
-        <button
-          className="openChatBtn"
-          onClick={() => {
-            setChatOpen(true);
-          }}
-        >
-          Chatt
-        </button>
-      )}
+      <Chat />
     </>
   );
 };
