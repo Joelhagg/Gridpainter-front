@@ -3,13 +3,14 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IRoom } from "./models/IRoom";
 import { SocketContext } from "../context/Socket";
+import { UsernameContext } from "../context/UsernameContext";
 
 export const Rooms = () => {
   const socket = useContext(SocketContext);
   const navigate = useNavigate();
   const [roomName, setRoomName] = useState("");
   const [rooms, setRooms] = useState<IRoom[]>([]);
-  const [currentUser, setCurrentUser] = useState("");
+  const { username, setUsername } = useContext(UsernameContext);
 
   async function getRooms() {
     let response = await axios.get<IRoom[]>("http://localhost:3001/rooms");
@@ -20,25 +21,23 @@ export const Rooms = () => {
     getRooms().then((res) => {
       setRooms(res);
     });
-    socket.on("username", setCurrentUser);
+    socket.on("username", setUsername);
   }, []);
 
   const createRoom = () => {
     const room = {
       name: roomName,
       id: socket.io.engine.id,
-      nickname: localStorage.getItem("nickname"),
     };
     socket.emit("createRoom", room);
     navigate(`/${roomName}`);
   };
 
   const joinRoom = (roomName: string) => {
-    if (currentUser.length >= 1) {
+    if (username.length >= 1) {
       const room = {
         name: roomName,
         id: socket.io.engine.id,
-        nickname: localStorage.getItem("nickname"),
       };
       socket.emit("leaveBeforeJoining", socket.id);
       socket.emit("join", room);
@@ -80,7 +79,7 @@ export const Rooms = () => {
 
   return (
     <div>
-      <h3>Hej {currentUser}!</h3>
+      <h3>Hej {username}!</h3>
       <form onSubmit={createRoom}>
         <div className="createRoomBox">
           <input

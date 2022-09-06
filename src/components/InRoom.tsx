@@ -9,7 +9,6 @@ export const InRoom = () => {
   const socket = useContext(SocketContext);
   let room = useParams();
   let navigate = useNavigate();
-  const [nickname] = useState(localStorage.getItem("nickname"));
 
   useEffect(() => {
     socket.emit("renderGame", room);
@@ -17,7 +16,7 @@ export const InRoom = () => {
 
   // lägg till en socket.leave till back-enden
   const routeChange = () => {
-    socket.emit("leaveRoom", { room: room.room, nickname });
+    socket.emit("leaveRoom", { room: room.room });
     navigate("/");
     console.log(room.room);
   };
