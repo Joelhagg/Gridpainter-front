@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IRoom } from "./models/IRoom";
 import { SocketContext } from "../context/Socket";
@@ -9,15 +9,13 @@ export const Rooms = () => {
   const navigate = useNavigate();
   const [roomName, setRoomName] = useState("");
   const [rooms, setRooms] = useState<IRoom[]>([]);
-  let nickname = "Louise";
+
   async function getRooms() {
     let response = await axios.get<IRoom[]>("http://localhost:3001/rooms");
     return response.data;
   }
 
   useEffect(() => {
-    // den här ska va kvar! Men kan få flyttas om den har en bättre plats :)
-    //socket.connect();
     getRooms().then((res) => {
       setRooms(res);
     });
@@ -33,9 +31,7 @@ export const Rooms = () => {
     navigate(`/${roomName}`);
   };
 
-  const joinRoom = (roomName: any) => {
-    console.log("joinRoom", roomName);
-
+  const joinRoom = (roomName: string) => {
     const room = {
       name: roomName,
       id: socket.io.engine.id,
@@ -45,13 +41,9 @@ export const Rooms = () => {
     socket.emit("join", room);
   };
 
-  const deleteRoom = (room: any) => {
+  const deleteRoom = (room: IRoom) => {
     socket.emit("deleteRoom", { _id: room._id, name: room.name });
-  };
-
-  const handleChange = (e: any) => {
-    setRoomName(e.currentTarget.value);
-    createRoom();
+    socket.on("newRoomsList", setRooms);
   };
 
   let renderRooms = rooms.map((room, i) => {
@@ -79,7 +71,7 @@ export const Rooms = () => {
 
   return (
     <div>
-      <form onSubmit={handleChange}>
+      <form onSubmit={createRoom}>
         <div className="createRoomBox">
           <input
             type="text"
@@ -93,7 +85,6 @@ export const Rooms = () => {
           <input type="submit" value="Skapa rum" />
         </div>
       </form>
-
       <div>{renderRooms}</div>
     </div>
   );
