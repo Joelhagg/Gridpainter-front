@@ -14,13 +14,22 @@ export const Grid = () => {
   const [fields, setFields] = useState<IFields[]>([]);
   const [colors, setColors] = useState<IColors[]>([]);
   const [myColor, setMyColor] = useState("white");
+  const [nickname] = useState(localStorage.getItem("nickname"));
 
   let testFacit = [];
-
   /////////////////////////////////// -- USEEFFECT --     //////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
   useEffect(() => {
     socket.on("updateColors", function (msg) {
+      const myServerColor = msg.find((colorInPalette: any) => {
+        return colorInPalette.takenBy === nickname;
+      });
+      if (myServerColor !== "white") {
+        setMyColor(myServerColor.color);
+      } else {
+        setMyColor("white");
+      }
+
       setColors(msg);
     });
 
@@ -35,7 +44,7 @@ export const Grid = () => {
 
     socket.on("drawing", (data) => {
       const gridState = data;
-      console.log("drawing", data);
+      //  console.log("drawing", data);
       setFields([...gridState]);
     });
     return () => {
@@ -57,6 +66,7 @@ export const Grid = () => {
           socket.emit("drawing", {
             field,
             room,
+            nickname,
           });
           return;
         }
@@ -64,26 +74,33 @@ export const Grid = () => {
         socket.emit("drawing", {
           field,
           room,
+          nickname,
         });
       }
     });
   };
 
-  function pickColor(color: string) {
-    if (myColor !== "white") {
-      socket.emit("colorChange", {
-        oldColor: myColor,
-        newColor: color,
-        room,
-      });
-    } else {
-      socket.emit("pickedColor", {
-        color,
-        room,
-      });
-    }
+  function pickColor(color: IColors) {
+    if (color.takenBy === "") {
+      if (myColor !== "white") {
+        console.log("colorChange", color, myColor);
+        socket.emit("colorChange", {
+          oldColor: myColor,
+          newColor: color.color,
+          room,
+          nickname,
+        });
+      } else {
+        console.log("pickColor", color, myColor, nickname);
+        socket.emit("pickedColor", {
+          color: color.color,
+          room,
+          nickname,
+        });
+      }
 
-    setMyColor(color);
+      setMyColor(color.color);
+    }
   }
 
   function printFacit() {
@@ -138,12 +155,15 @@ export const Grid = () => {
   let colorsToPickFrom = colors.map((color) => {
     return (
       <div
+        style={{ color: color.takenBy !== "" ? "#f00" : "#000" }}
         key={color.color}
         onClick={() => {
-          pickColor(color.color);
+          pickColor(color);
         }}
       >
-        {color.color}
+        {color.takenBy !== ""
+          ? `${color.color} - ${color.takenBy}`
+          : `${color.color}`}
       </div>
     );
   });

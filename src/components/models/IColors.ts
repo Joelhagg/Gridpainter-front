@@ -1,3 +1,4 @@
-export interface IColors{
-    color: string
-  }
+export interface IColors {
+  color: string;
+  takenBy: string;
+}
