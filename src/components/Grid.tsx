@@ -25,7 +25,7 @@ export const Grid = () => {
         return colorInPalette.takenBy === nickname;
       });
       if (myServerColor !== "white") {
-        setMyColor(myServerColor.color);
+        setMyColor(myServerColor);
       } else {
         setMyColor("white");
       }
@@ -38,7 +38,6 @@ export const Grid = () => {
     });
 
     socket.on("history", function (msg) {
-      console.log("32 history", msg);
       setFields(msg);
     });
 

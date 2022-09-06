@@ -9,6 +9,7 @@ export const Rooms = () => {
   const navigate = useNavigate();
   const [roomName, setRoomName] = useState("");
   const [rooms, setRooms] = useState<IRoom[]>([]);
+  const [currentUser, setCurrentUser] = useState("");
 
   async function getRooms() {
     let response = await axios.get<IRoom[]>("http://localhost:3001/rooms");
@@ -19,6 +20,7 @@ export const Rooms = () => {
     getRooms().then((res) => {
       setRooms(res);
     });
+    socket.on("username", setCurrentUser);
   }, []);
 
   const createRoom = () => {
@@ -32,19 +34,26 @@ export const Rooms = () => {
   };
 
   const joinRoom = (roomName: string) => {
-    const room = {
-      name: roomName,
-      id: socket.io.engine.id,
-      nickname: localStorage.getItem("nickname"),
-    };
-    socket.emit("leaveBeforeJoining", socket.id);
-    socket.emit("join", room);
+    if (currentUser.length >= 1) {
+      const room = {
+        name: roomName,
+        id: socket.io.engine.id,
+        nickname: localStorage.getItem("nickname"),
+      };
+      socket.emit("leaveBeforeJoining", socket.id);
+      socket.emit("join", room);
+    } else {
+      alert("Du har inget nickname! Skickar dig tillbaka till start");
+      navigate("/");
+    }
   };
 
   const deleteRoom = (room: IRoom) => {
     socket.emit("deleteRoom", { _id: room._id, name: room.name });
     socket.on("newRoomsList", setRooms);
   };
+
+  // getNames();
 
   let renderRooms = rooms.map((room, i) => {
     return (
@@ -71,13 +80,14 @@ export const Rooms = () => {
 
   return (
     <div>
+      <h3>Hej {currentUser}!</h3>
       <form onSubmit={createRoom}>
         <div className="createRoomBox">
           <input
             type="text"
             name="roomName"
             id="roomName"
-            placeholder="Room name"
+            placeholder="Nytt rum..."
             required
             value={roomName}
             onChange={(e) => setRoomName(e.target.value)}
@@ -85,6 +95,7 @@ export const Rooms = () => {
           <input type="submit" value="Skapa rum" />
         </div>
       </form>
+      <h5>Skapa ett nytt rum eller spela i ett som redan finns!</h5>
       <div>{renderRooms}</div>
     </div>
   );
