@@ -12,6 +12,7 @@ export const InRoom = () => {
   let navigate = useNavigate();
   const [fields, setFields] = useState([]);
   const [colors, setColors] = useState([]);
+  const [nickname] = useState(localStorage.getItem("nickname"));
 
   const [chatOpen, setChatOpen] = useState(false);
 
@@ -27,7 +28,7 @@ export const InRoom = () => {
 
   // lägg till en socket.leave till back-enden
   const routeChange = () => {
-    socket.emit("leaveRoom", room);
+    socket.emit("leaveRoom", { room: room.room, nickname });
     navigate("/");
     console.log(room.room);
   };
