@@ -44,7 +44,7 @@ export const Grid = () => {
 
     socket.on("drawing", (data) => {
       const gridState = data;
-      console.log("drawing", data);
+      //  console.log("drawing", data);
       setFields([...gridState]);
     });
     return () => {
@@ -80,25 +80,27 @@ export const Grid = () => {
     });
   };
 
-  function pickColor(color: string) {
-    if (myColor !== "white") {
-      console.log("pickColor", color, myColor);
-      socket.emit("colorChange", {
-        oldColor: myColor,
-        newColor: color,
-        room,
-        nickname,
-      });
-    } else {
-      console.log("pickColor not white", color, myColor, nickname);
-      socket.emit("pickedColor", {
-        color,
-        room,
-        nickname,
-      });
-    }
+  function pickColor(color: IColors) {
+    if (color.takenBy === "") {
+      if (myColor !== "white") {
+        console.log("colorChange", color, myColor);
+        socket.emit("colorChange", {
+          oldColor: myColor,
+          newColor: color.color,
+          room,
+          nickname,
+        });
+      } else {
+        console.log("pickColor", color, myColor, nickname);
+        socket.emit("pickedColor", {
+          color: color.color,
+          room,
+          nickname,
+        });
+      }
 
-    setMyColor(color);
+      setMyColor(color.color);
+    }
   }
 
   function printFacit() {
@@ -156,7 +158,7 @@ export const Grid = () => {
         style={{ color: color.takenBy !== "" ? "#f00" : "#000" }}
         key={color.color}
         onClick={() => {
-          pickColor(color.color);
+          pickColor(color);
         }}
       >
         {color.takenBy !== ""
