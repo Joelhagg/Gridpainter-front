@@ -22,17 +22,6 @@ export const Grid = () => {
   //////////////////////////////////////////////////////////////////////////////////////
   useEffect(() => {
     socket.on("updateColors", function (msg) {
-      console.log("updateCOlors", msg);
-      const myServerColor = msg.find((colorInPalette: any) => {
-        return colorInPalette.takenBy === username;
-      });
-      console.log("myServerColor", myServerColor);
-      if (myServerColor !== "white") {
-        setMyColor(myServerColor.color);
-      } else {
-        setMyColor("white");
-      }
-
       setColors(msg);
     });
     socket.on("colors", function (msg) {
@@ -81,14 +70,12 @@ export const Grid = () => {
 
   function pickColor(color: IColors) {
     if (color.takenBy === "") {
-      console.log("colorChange", color, myColor);
       socket.emit("colorChange", {
         newColor: color.color,
         room,
       });
-
       setMyColor(color.color);
-    }
+    }  
   }
 
   function printFacit() {

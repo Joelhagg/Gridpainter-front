@@ -89,7 +89,6 @@ export const Rooms = () => {
 
   return (
     <div>
-      <h3>Hej {username}!</h3>
       <h5>Skapa ett nytt rum eller spela i ett som redan finns!</h5>
       <form onSubmit={(e) => {createRoom(e)}}>
         <div className="createRoomBox">
