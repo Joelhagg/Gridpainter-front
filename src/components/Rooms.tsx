@@ -26,7 +26,7 @@ export const Rooms = () => {
   }, []);
 
   const createRoom = (e: FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     // Namnen på alla rum
     const newRoom = {
       name: roomName,
@@ -34,11 +34,11 @@ export const Rooms = () => {
     };
 
     let checkRooms = rooms.some((room) => {
-      return room.name === newRoom.name
-    })
+      return room.name === newRoom.name;
+    });
 
-    if(checkRooms){
-      setErrorMsg(true)
+    if (checkRooms) {
+      setErrorMsg(true);
     } else {
       socket.emit("createRoom", newRoom);
       navigate(`/${roomName}`);
@@ -46,16 +46,30 @@ export const Rooms = () => {
   };
 
   const joinRoom = (roomName: string) => {
-    if (username.length >= 1) {
-      const room = {
-        name: roomName,
-        id: socket.io.engine.id,
-      };
-      socket.emit("leaveBeforeJoining", socket.id);
-      socket.emit("join", room);
-    } else {
-      alert("Du har inget nickname! Skickar dig tillbaka till start");
+    const membersInRooms = rooms.map((room) => {
+      return room.members;
+    });
+    const flatMembers = membersInRooms.flat();
+
+    const alreadyMember = flatMembers.some((member) => {
+      return username == member;
+    });
+
+    if (alreadyMember) {
+      alert("Nickname används redan, hitta på något nytt!");
       navigate("/");
+    } else {
+      if (username.length >= 1) {
+        const room = {
+          name: roomName,
+          id: socket.io.engine.id,
+        };
+        socket.emit("leaveBeforeJoining", socket.id);
+        socket.emit("join", room);
+      } else {
+        alert("Du har inget nickname! Skickar dig tillbaka till start");
+        navigate("/");
+      }
     }
   };
 
@@ -90,7 +104,11 @@ export const Rooms = () => {
   return (
     <div>
       <h5>Skapa ett nytt rum eller spela i ett som redan finns!</h5>
-      <form onSubmit={(e) => {createRoom(e)}}>
+      <form
+        onSubmit={(e) => {
+          createRoom(e);
+        }}
+      >
         <div className="createRoomBox">
           <input
             type="text"
@@ -100,15 +118,13 @@ export const Rooms = () => {
             required
             value={roomName}
             onChange={(e) => {
-              setRoomName(e.target.value)
-              setErrorMsg(false)
+              setRoomName(e.target.value);
+              setErrorMsg(false);
             }}
           />
           <button type="submit">Create room</button>
 
-          {errorMsg && <div>
-            Room with that name already exist
-          </div>}
+          {errorMsg && <div>Room with that name already exist</div>}
         </div>
       </form>
       <br />
