@@ -28,24 +28,21 @@ export const Rooms = () => {
   const createRoom = (e: FormEvent) => {
     e.preventDefault()
     // Namnen på alla rum
-    const allRooms = rooms.map((room) => {
-      return room.name;
-    });
-    const room = {
+    const newRoom = {
       name: roomName,
       id: socket.io.engine.id,
     };
 
-    allRooms.find((existingRoom) => {
-      if(existingRoom === room.name){
-        setErrorMsg(true)
-        console.log("already exist");
-        
-      } else {
-        //socket.emit("createRoom", room);
-        //navigate(`/${roomName}`);
-      }
+    let checkRooms = rooms.some((room) => {
+      return room.name === newRoom.name
     })
+
+    if(checkRooms){
+      setErrorMsg(true)
+    } else {
+      socket.emit("createRoom", newRoom);
+      navigate(`/${roomName}`);
+    }
   };
 
   const joinRoom = (roomName: string) => {
@@ -66,8 +63,6 @@ export const Rooms = () => {
     socket.emit("deleteRoom", { _id: room._id, name: room.name });
     socket.on("newRoomsList", setRooms);
   };
-
-  // getNames();
 
   let renderRooms = rooms.map((room, i) => {
     return (
@@ -111,7 +106,7 @@ export const Rooms = () => {
             }}
           />
           <button type="submit">Create room</button>
-          
+
           {errorMsg && <div>
             Room with that name already exist
           </div>}
