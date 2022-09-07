@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { FormEvent, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IRoom } from "./models/IRoom";
 import { SocketContext } from "../context/Socket";
@@ -11,6 +11,7 @@ export const Rooms = () => {
   const [roomName, setRoomName] = useState("");
   const [rooms, setRooms] = useState<IRoom[]>([]);
   const { username, setUsername } = useContext(UsernameContext);
+  const [errorMsg, setErrorMsg] = useState<boolean>(false);
 
   async function getRooms() {
     let response = await axios.get<IRoom[]>("http://localhost:3001/rooms");
@@ -24,7 +25,8 @@ export const Rooms = () => {
     socket.on("username", setUsername);
   }, []);
 
-  const createRoom = () => {
+  const createRoom = (e: FormEvent) => {
+    e.preventDefault()
     // Namnen på alla rum
     const allRooms = rooms.map((room) => {
       return room.name;
@@ -33,8 +35,17 @@ export const Rooms = () => {
       name: roomName,
       id: socket.io.engine.id,
     };
-    socket.emit("createRoom", room);
-    navigate(`/${roomName}`);
+
+    allRooms.find((existingRoom) => {
+      if(existingRoom === room.name){
+        setErrorMsg(true)
+        console.log("already exist");
+        
+      } else {
+        //socket.emit("createRoom", room);
+        //navigate(`/${roomName}`);
+      }
+    })
   };
 
   const joinRoom = (roomName: string) => {
@@ -85,7 +96,7 @@ export const Rooms = () => {
     <div>
       <h3>Hej {username}!</h3>
       <h5>Skapa ett nytt rum eller spela i ett som redan finns!</h5>
-      <form onSubmit={createRoom}>
+      <form onSubmit={(e) => {createRoom(e)}}>
         <div className="createRoomBox">
           <input
             type="text"
@@ -94,9 +105,16 @@ export const Rooms = () => {
             placeholder="Nytt rum..."
             required
             value={roomName}
-            onChange={(e) => setRoomName(e.target.value)}
+            onChange={(e) => {
+              setRoomName(e.target.value)
+              setErrorMsg(false)
+            }}
           />
-          <input type="submit" value="Skapa rum" />
+          <button type="submit">Create room</button>
+          
+          {errorMsg && <div>
+            Room with that name already exist
+          </div>}
         </div>
       </form>
       <br />
