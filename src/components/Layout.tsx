@@ -1,7 +1,17 @@
-import { Outlet } from "react-router-dom"
-import { SocketContext, socket } from "../context/Socket"
+import { useEffect } from "react"
+import { Navigate, Outlet, useNavigate } from "react-router-dom"
+import { SocketContext, socket, user } from "../context/Socket"
 
 export const Layout = () => {
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if(user === ""){
+      navigate('/')
+    }
+  },[])
+  
+
   return(
   <SocketContext.Provider value={socket}>
   <header>

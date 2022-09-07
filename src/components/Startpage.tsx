@@ -6,13 +6,10 @@ import { SocketContext } from "../context/Socket";
 export const Startpage = () => {
   const socket = useContext(SocketContext);
   const navigate = useNavigate();
-  const [nickname, setNickname] = useState(
-    localStorage.getItem("nickname") ?? ""
-  );
+  const [nickname, setNickname] = useState("");
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    localStorage.setItem("nickname", nickname);
     socket.emit("username", nickname);
     navigate("/rooms");
   };
