@@ -1,4 +1,3 @@
-import axios from "axios";
 import { FormEvent, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IRoom } from "./models/IRoom";
@@ -13,15 +12,9 @@ export const Rooms = () => {
   const { username, setUsername } = useContext(UsernameContext);
   const [errorMsg, setErrorMsg] = useState<boolean>(false);
 
-  async function getRooms() {
-    let response = await axios.get<IRoom[]>("http://localhost:3001/rooms");
-    return response.data;
-  }
-
   useEffect(() => {
-    getRooms().then((res) => {
-      setRooms(res);
-    });
+    socket.emit("getRooms")
+    socket.on("newRoomsList", setRooms)
     socket.on("username", setUsername);
   }, []);
 
@@ -41,6 +34,7 @@ export const Rooms = () => {
       setErrorMsg(true)
     } else {
       socket.emit("createRoom", newRoom);
+      socket.on("newRoomsList", setRooms)
       navigate(`/${roomName}`);
     }
   };
