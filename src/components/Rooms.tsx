@@ -25,6 +25,10 @@ export const Rooms = () => {
   }, []);
 
   const createRoom = () => {
+    // Namnen på alla rum
+    const allRooms = rooms.map((room) => {
+      return room.name;
+    });
     const room = {
       name: roomName,
       id: socket.io.engine.id,
@@ -80,6 +84,7 @@ export const Rooms = () => {
   return (
     <div>
       <h3>Hej {username}!</h3>
+      <h5>Skapa ett nytt rum eller spela i ett som redan finns!</h5>
       <form onSubmit={createRoom}>
         <div className="createRoomBox">
           <input
@@ -94,7 +99,7 @@ export const Rooms = () => {
           <input type="submit" value="Skapa rum" />
         </div>
       </form>
-      <h5>Skapa ett nytt rum eller spela i ett som redan finns!</h5>
+      <br />
       <div>{renderRooms}</div>
     </div>
   );
