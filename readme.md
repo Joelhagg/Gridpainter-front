@@ -4,7 +4,7 @@ Gruppprojekt för en skoluppgift. En app byggd på realtidskommunikation, där a
 
 Det målade rutnätet sparas automatiskt i en mongoDB-databas, så även om samtliga användare i rummet lämnar applikationen, så finns bilden kvar när man öppnar rummet igen.
 
-[Test on Heroku](https://gridpainter-front-v2.herokuapp.com/)
+[Testa på Heroku](https://gridpainter-front-v2.herokuapp.com/)
 
 [server-repo](https://github.com/Joelhagg/Gridpainter-back)
 
