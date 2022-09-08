@@ -1,5 +1,38 @@
-.startpage-container{
-    display: flex;
-    flex-direction: column;
-    text-align: center;
+body {
+    background-color: rgb(247, 246, 220)
 }
+
+
+.header {
+    display: flex;
+    justify-content: center;
+}
+
+.startpage-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(255, 192, 144);
+    max-width: 40rem;
+    min-height: 15em;
+    border-radius: 5%;
+    margin-left: auto;
+    margin-right: auto;
+}
+.startpage-container input{
+    width: 210px;
+  height: 40px;
+  margin: 7px;
+  border: 2px solid #f77707d6;
+  border-radius: 5px;
+  padding: 5px;
+  font-size: 16px;
+}
+
+input[type=submit]{
+ height: 54px;
+  background: #e37f26d6;
+  color: #fff;
+  cursor: pointer;
+}
+

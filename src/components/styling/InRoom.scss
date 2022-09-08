@@ -1,3 +1,10 @@
+.inRoomsContainer {
+  display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
 .openChatBtn{
   position: fixed;
   right: 10px;
@@ -114,3 +121,21 @@
     letter-spacing: -2px;
   }
 }
+
+
+.leaveRoomBtn {
+    width: 75px;
+    height: 25px;
+    margin: 7px;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 16px;
+    background:#e99f62;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .leaveRoomBtn:hover {
+    background: #d4782c;
+  }
