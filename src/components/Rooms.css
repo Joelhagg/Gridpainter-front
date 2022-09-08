@@ -37,5 +37,22 @@
     cursor: pointer;
 }
 .createRoomBox button:hover{
-    background: #e99f62;
+    background: #d4782c;
+  }
+
+  .joinRoomBtn {
+    width: 75px;
+    height: 25px;
+    margin: 7px;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 16px;
+    background:#e99f62;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .joinRoomBtn:hover {
+    background: #d4782c;
   }

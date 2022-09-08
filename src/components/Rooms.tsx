@@ -75,9 +75,10 @@ export const Rooms = () => {
 
   let renderRooms = rooms.map((room, i) => {
     return (
-      <div key={i}>
+      <div className="joinRoom"
+        key={i}>
         {room.name}
-        <button
+        <button className="joinRoomBtn"
           onClick={() => {
             navigate(`/${room.name}`);
             joinRoom(room.name);
@@ -85,7 +86,7 @@ export const Rooms = () => {
         >
           Join
         </button>
-        <button
+        <button className="joinRoomBtn"
           onClick={() => {
             deleteRoom(room);
           }}
