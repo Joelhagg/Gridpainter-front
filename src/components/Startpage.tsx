@@ -17,7 +17,7 @@ export const Startpage = () => {
   return (
     <div className="startpage-container">
       <form onSubmit={handleSubmit}>
-        <label>Ange nickname: </label>
+        <label><h3>Ange nickname: </h3></label>
         <input
           type="text"
           name="nickname"
