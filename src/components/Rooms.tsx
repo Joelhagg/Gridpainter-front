@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { IRoom } from "./models/IRoom";
 import { SocketContext } from "../context/Socket";
 import { UsernameContext } from "../context/UsernameContext";
+import "./Rooms.css";
 
 export const Rooms = () => {
   const socket = useContext(SocketContext);
@@ -74,9 +75,10 @@ export const Rooms = () => {
 
   let renderRooms = rooms.map((room, i) => {
     return (
-      <div key={i}>
+      <div className="joinRoom"
+        key={i}>
         {room.name}
-        <button
+        <button className="joinRoomBtn"
           onClick={() => {
             navigate(`/${room.name}`);
             joinRoom(room.name);
@@ -84,7 +86,7 @@ export const Rooms = () => {
         >
           Join
         </button>
-        <button
+        <button className="joinRoomBtn"
           onClick={() => {
             deleteRoom(room);
           }}
@@ -96,8 +98,8 @@ export const Rooms = () => {
   });
 
   return (
-    <div>
-      <h5>Skapa ett nytt rum eller spela i ett som redan finns!</h5>
+    <div className="room-container">
+      <h3>Skapa ett nytt rum eller spela i ett som redan finns!</h3>
       <form
         onSubmit={(e) => {
           createRoom(e);
@@ -122,7 +124,7 @@ export const Rooms = () => {
         </div>
       </form>
       <br />
-      <div>{renderRooms}</div>
+      <div className="rooms">{renderRooms}</div>
     </div>
   );
 };

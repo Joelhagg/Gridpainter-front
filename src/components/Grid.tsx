@@ -7,6 +7,7 @@ import Facit from "./../assets/facit.json";
 import { useParams } from "react-router-dom";
 import { SocketContext } from "../context/Socket";
 import { UsernameContext } from "../context/UsernameContext";
+import "./Grid.css"
 //const socket = io("http://localhost:3001", { autoConnect: false });
 
 export const Grid = () => {
@@ -160,23 +161,22 @@ export const Grid = () => {
   //////////////////////////////////////////////////////////////////////////////////////
 
   return (
-    <>
+    <div className="gridLayout">
       {/* {colors.length >= 0 && <> */}
 
-      <button onClick={printFacit}>se facit du ritat</button>
+      {/*<button className="facitBtn" onClick={printFacit}>se facit du ritat</button> */}
       <div id="grid">
         {renderGrid}
         <div>{colorsToPickFrom}</div>
       </div>
 
-      <button onClick={compareToFacit}>rätta bilden</button>
-
       <div id="facitGrid">{renderFacit}</div>
-
+      
+      <button className="checkBtn" onClick={compareToFacit}>rätta bilden</button>
       {/* </>
     } */}
 
       {/* {colors.length == 0 && <div>rummet är tyvörr fullt, prova ett annat rum</div>} */}
-    </>
+    </div>
   );
 };
