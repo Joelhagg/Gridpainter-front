@@ -15,3 +15,27 @@
     justify-content: space-between;
     font-weight: 500;
 }
+.createRoomBox input{
+    width: 210px;
+    height: 40px;
+    margin: 7px;
+    border: 2px solid #f77707d6;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 16px;
+}
+.createRoomBox button{
+    width: 225px;
+    height: 54px;
+    margin: 7px;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 16px;
+    background:#e99f62;
+    color: #fff;
+    cursor: pointer;
+}
+.createRoomBox button:hover{
+    background: #e99f62;
+  }
