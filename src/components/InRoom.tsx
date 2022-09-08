@@ -23,8 +23,10 @@ export const InRoom = () => {
 
   return (
     <>
-      <button onClick={routeChange}>Lämna rummet</button>
-      <h2>Du är med i rum: {room.room}</h2>
+      <div className="inRoomsContainer">
+        <h2>Du är med i rum: {room.room}</h2>
+      <button className="leaveRoomBtn" onClick={routeChange}>Lämna rummet</button>
+      </div>
       <Grid />
       <Chat />
     </>
