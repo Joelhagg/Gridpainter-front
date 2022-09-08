@@ -1,19 +1,32 @@
-import { useState } from "react"
-import { Chat } from "./Chat"
-import { Grid } from "./Grid"
+import { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { SocketContext, user } from "../context/Socket";
+import { Chat } from "./Chat";
+import { Grid } from "./Grid";
+import "./styling/InRoom.scss";
 
 export const InRoom = () => {
-  const [chatOpen, setChatOpen] = useState(false)
+  const socket = useContext(SocketContext);
+  let room = useParams();
+  let navigate = useNavigate();
 
-  const closeChat = () => {
-    setChatOpen(false)
-  }
+  useEffect(() => {
+    socket.emit("renderGame", room);
+  }, []);
 
-  return(<>
-    <h2>Ett rum</h2>
-    <Grid/>
-    <button onClick={() => {setChatOpen(true)}}>Chatt</button>
+  // lägg till en socket.leave till back-enden
+  const routeChange = () => {
+    socket.emit("leaveRoom", { room: room.room });
+    navigate("/rooms");
+    console.log(room.room);
+  };
 
-    {chatOpen && <Chat closeClick={closeChat}/>}
-  </>)
-}
+  return (
+    <>
+      <button onClick={routeChange}>Lämna rummet</button>
+      <h2>Du är med i rum: {room.room}</h2>
+      <Grid />
+      <Chat />
+    </>
+  );
+};

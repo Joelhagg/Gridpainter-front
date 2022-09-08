@@ -1,40 +1,182 @@
-import axios from "axios"
-import React, { useEffect, useState } from "react"
-import { IFields } from "./models/IFields"
-import { io } from "socket.io-client"
-import { hover } from "@testing-library/user-event/dist/hover"
-const socket = io('http://localhost:3001', {"autoConnect": false})
+import React, { useContext, useEffect, useState } from "react";
+import { IFields } from "./models/IFields";
+import { io } from "socket.io-client";
+
+import { IColors } from "./models/IColors";
+import Facit from "./../assets/facit.json";
+import { useParams } from "react-router-dom";
+import { SocketContext } from "../context/Socket";
+import { UsernameContext } from "../context/UsernameContext";
+//const socket = io("http://localhost:3001", { autoConnect: false });
 
 export const Grid = () => {
-  const [fields, setFields] = useState<IFields[]>([])
-  const myColor = "lightgreen"
+  const socket = useContext(SocketContext);
+  let { room } = useParams();
+  const [fields, setFields] = useState<IFields[]>([]);
+  const [colors, setColors] = useState<IColors[]>([]);
+  const [myColor, setMyColor] = useState("white");
+  const { username } = useContext(UsernameContext);
 
+  let testFacit = [];
+  /////////////////////////////////// -- USEEFFECT --     //////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////
   useEffect(() => {
-    axios.get<IFields[]>('http://localhost:3001/fields')
-    .then(res => {
-      setFields(res.data)
-    })
-  }, [fields])
+    socket.on("updateColors", function (msg) {
+      setColors(msg);
+    });
+    socket.on("colors", function (msg) {
+      setColors(msg);
+    });
+
+    socket.on("history", function (msg) {
+      setFields(msg);
+    });
+
+    socket.on("drawing", (data) => {
+      const gridState = data;
+      //  console.log("drawing", data);
+      setFields([...gridState]);
+    });
+    return () => {
+      socket.off("updateColors");
+      socket.off("colors");
+      socket.off("history");
+      socket.off("drawing");
+    };
+  }, []);
+
+  /////////////////////////////////// -- FUNKTIONER --     //////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////
 
   const paint = (field: IFields, e: React.MouseEvent<HTMLDivElement>) => {
-    socket.connect()
-    
-    fields.find(f => {
-      if(f.position === field.position){
-        field.color = myColor
-        socket.emit("drawing", field)
-        console.log(fields);
+    fields.find((f) => {
+      if (f.position === field.position) {
+        if (field.color !== "white") {
+          field.color = "white";
+          socket.emit("drawing", {
+            field,
+            room,
+          });
+          return;
+        }
+        field.color = myColor;
+        socket.emit("drawing", {
+          field,
+          room,
+        });
       }
-    }) 
+    });
+  };
+
+  function pickColor(color: IColors) {
+    if (color.takenBy === "") {
+      socket.emit("colorChange", {
+        newColor: color.color,
+        room,
+      });
+      setMyColor(color.color);
+    }  
   }
 
-  let renderGrid = fields.map(field => {
-    return(<div key={field.position} id={field.position} className="pixel" 
-        onMouseEnter={(e) => {e.currentTarget.style.backgroundColor = myColor}}
-        onMouseLeave={(e) => {e.currentTarget.style.backgroundColor = field.color}}
-        onClick={(e) => paint(field, e)} style={{backgroundColor: field.color}}>
-      </div>)
-  })
+  function printFacit() {
+    testFacit = fields;
+    console.log(testFacit);
+  }
 
-  return(<div id="grid">{renderGrid}</div>)
-}
+  function compareToFacit() {
+    let count = [0, 0];
+    for (let i in Facit) {
+      count[1]++; // total count
+      if (fields[i].color === Facit[i].color) {
+        if (fields[i].color === "white" && Facit[i].color === "white") {
+          count[1]--;
+        } else {
+          count[0]++;
+        } // match count
+      }
+    }
+    let percentage = (count[0] / count[1]) * 100 + "%";
+    console.log("percentage: " + percentage);
+    console.log("count 0)" + count[0]);
+    console.log("count1)" + count[1]);
+    alert("percentage: " + percentage);
+  }
+
+  /////////////////////////////////// -- HTML --     //////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////
+
+  let renderGrid = fields.map((field) => {
+    return (
+      <div
+        key={field.position}
+        id={field.position}
+        className="pixel"
+        onMouseEnter={(e) => {
+          if (e.currentTarget.style.backgroundColor !== "white") {
+            e.currentTarget.style.backgroundColor = "white";
+          } else {
+            e.currentTarget.style.backgroundColor = myColor;
+          }
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = field.color;
+        }}
+        onClick={(e) => paint(field, e)}
+        style={{ backgroundColor: field.color }}
+      ></div>
+    );
+  });
+
+  let colorsToPickFrom = colors.map((color) => {
+    return (
+      <div
+        style={{ color: color.takenBy !== "" ? "#f00" : "#000" }}
+        key={color.color}
+        onClick={() => {
+          pickColor(color);
+        }}
+      >
+        {color.takenBy !== ""
+          ? `${color.color} - ${color.takenBy}`
+          : `${color.color}`}
+      </div>
+    );
+  });
+
+  let renderFacit = Facit.map((pixel) => {
+    return (
+      <div
+        key={pixel.position}
+        id={pixel.position}
+        className="pixelFacit"
+        style={{ backgroundColor: pixel.color }}
+      ></div>
+    );
+  });
+
+  /////////////////////////////////// -- JSX --     //////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////
+
+  return (
+    <>
+      {/* {colors.length >= 0 && <> */}
+
+      <button onClick={printFacit}>se facit du ritat</button>
+      <div id="grid">
+        {renderGrid}
+        <div>{colorsToPickFrom}</div>
+      </div>
+
+      <button onClick={compareToFacit}>rätta bilden</button>
+
+      <div id="facitGrid">{renderFacit}</div>
+
+      {/* </>
+    } */}
+
+      {/* {colors.length == 0 && <div>rummet är tyvörr fullt, prova ett annat rum</div>} */}
+    </>
+  );
+};

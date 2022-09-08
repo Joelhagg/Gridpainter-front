@@ -1,10 +1,24 @@
-import { Outlet } from "react-router-dom"
+import { useEffect } from "react"
+import { Navigate, Outlet, useNavigate } from "react-router-dom"
+import { SocketContext, socket, user } from "../context/Socket"
 
 export const Layout = () => {
-  return(<>
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if(user === ""){
+      navigate('/')
+    }
+  },[])
+  
+
+  return(
+  <SocketContext.Provider value={socket}>
   <header>
     <h1>Gridpainter</h1>
   </header>
-  <main><Outlet/></main>
-  </>)
+  <main>
+    <Outlet/>
+  </main>
+  </SocketContext.Provider>)
 }
